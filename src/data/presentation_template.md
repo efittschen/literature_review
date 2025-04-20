@@ -8,11 +8,11 @@
 
 ### Reasons to read:
 
-{{reasons_to_read}}
+{{"\n\n".join(reasons_to_read)}}
 
 ### Questions:
 
-{{questions}}
+{{"\n\n".join(questions)}}
 
 ## Details:
 

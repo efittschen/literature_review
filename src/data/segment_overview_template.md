@@ -1,5 +1,9 @@
-#### {{"!!" if details==0}}{{title}} ([pdf]({{pdf_path}}), [edit]({{edit_path}}), [details]({{presentation_path}}))
-authors: {{author}}
+#### {{title}} ([pdf]({{pdf_path}}), [edit]({{edit_path}}), [details]({{presentation_path}}))
+authors: {{", ".join(author)}}
+<details>
+<summary>Abstract</summary>
+{{abstract}}
+</details>
 <details>
 <summary>Concise Description</summary>
 {{concise_description}}

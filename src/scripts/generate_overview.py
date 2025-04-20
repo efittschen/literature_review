@@ -7,10 +7,10 @@ import yaml
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Generate a paper file from a PDF.")
     argparser.add_argument(
-        "--info_paths", type=str, nargs="+", required=True, help="Paths to the paper information."
+        "--info_paths", type=str, nargs="*", default=[], help="Paths to the paper information."
     )
     argparser.add_argument(
-        "--presentation_paths", type=str, nargs="+", required=True, help="Paths to the presentation information."
+        "--presentation_paths", type=str, nargs="*" , default=[], help="Paths to the presentation information."
     )
     argparser.add_argument(
         "--output_path", type=str, required=True, help="Path to the output file."
@@ -36,7 +36,8 @@ if __name__ == "__main__":
     with open(template_path, "r") as fin:
         template = Template(fin.read())
 
-    snippets = []
+    snippets_read = []
+    snippets_unread = []
     for paper, presentation in zip(info_paths, args.presentation_paths):
         if not paper.endswith(".md"):
             continue
@@ -48,12 +49,18 @@ if __name__ == "__main__":
         paper_info["edit_path"] = paper
         paper_info["presentation_path"] = presentation
         rendered = snippet_template.render(paper_info)
-        snippets.append(rendered)
+        if paper_info["read"]:
+            snippets_read.append(rendered)
+        else:
+            snippets_unread.append(rendered)
     
-    overview_section = "\n\n".join(snippets)
+    read_section = "\n\n".join(snippets_read)
+    unread_section = "\n\n".join(snippets_unread)
 
     project_information = yaml.safe_load(open(args.project_information_path, "r").read())
-    project_information["overview"] = overview_section
+    print(project_information)
+    project_information["read"] = read_section
+    project_information["unread"] = unread_section
     rendered_template = template.render(project_information)
 
     if os.path.exists(output_path):

@@ -3,6 +3,8 @@ import argparse
 import os
 from jinja2 import Template
 import yaml
+import arxiv
+import sys
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser(description="Generate a paper file from a PDF.")
@@ -21,22 +23,43 @@ if __name__ == "__main__":
     output_path = args.output_path
     template_path = args.template_path
 
-    reader = PdfReader("paper_pdfs/learning_and_unlearning_fabricated_knowledge_in_large_language_models.pdf")
-    info   = reader.metadata
+    if os.path.exists(output_path):
+        print(f"File {output_path} already exists. Skipping.")
+        sys.exit()
+
+    paper_id = os.path.basename(pdf_path).replace(".pdf", "")
+    client = arxiv.Client()
     try:
-        title  = info.title or info.get("/Title")
-        author = info.author or info.get("/Author")
-    except Exception as e:
-        print(f"Error reading metadata: {e}")
-        title = "Unknown Title"
-        author = "Unknown Author"
+        search = arxiv.Search(id_list=[paper_id])
+        paper = next(client.results(search))
+        title = paper.title
+        author = [a.name for a in paper.authors]
+        abstract = paper.summary
+    except Exception:
+        print(f"Could not load arxiv for {paper_id}")
+        abstract = "todo"
+        reader = PdfReader(pdf_path)
+        info   = reader.metadata
+        try:
+            title  = info.title or info.get("/Title")
+            if len(title) == 0:
+                raise ValueError("Title is empty!")
+        except Exception as e:
+            print(f"Error reading metadata: {e}")
+            title = "Unknown Title"
+
+        try:
+            author  = info.title or info.get("/Author")
+            if len(author) == 0:
+                raise ValueError("Author is empty!")
+        except Exception as e:
+            print(f"Error reading metadata: {e}")
+            author = ["Unknown Author"]
 
     with open(template_path, "r") as fin:
         template = Template(fin.read())
-    rendered = template.render(title=title, author=author, pdf_path=pdf_path)
-    print("-" *50 + "Edit:")
-    print(output_path)
-    print(os.path.exists(output_path))
+    rendered = template.render(title=title, author=yaml.dump(author), pdf_path=pdf_path, abstract=abstract)
+
     if os.path.exists(output_path):
         print(f"File {output_path} already exists. Skipping.")
     else:

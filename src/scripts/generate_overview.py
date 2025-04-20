@@ -58,7 +58,7 @@ if __name__ == "__main__":
     unread_section = "\n\n".join(snippets_unread)
 
     project_information = yaml.safe_load(open(args.project_information_path, "r").read())
-    print(project_information)
+
     project_information["read"] = read_section
     project_information["unread"] = unread_section
     rendered_template = template.render(project_information)

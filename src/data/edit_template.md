@@ -14,7 +14,7 @@ topics:
   topic_1: >
     reason, why this fits into topic_1
 abstract: >
-  "{{abstract.replace('\n', '')}}"
+  "{{abstract.replace('\n', ' ')}}"
 ---
 # {{title}} ([pdf]({{pdf_path}}))
 ### Your thoughts below:

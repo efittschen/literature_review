@@ -19,9 +19,9 @@ todo
 </details>
 <details>
 <summary>Reason to read</summary>
-['todo']
+todo
 </details>
 <details>
 <summary>Questions</summary>
-['todo']
+todo
 </details>

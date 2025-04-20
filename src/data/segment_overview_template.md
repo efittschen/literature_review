@@ -10,9 +10,9 @@ authors: {{", ".join(author)}}
 </details>
 <details>
 <summary>Reason to read</summary>
-{{reasons_to_read}}
+{{"\n".join(reasons_to_read)}}
 </details>
 <details>
 <summary>Questions</summary>
-{{questions}}
+{{"\n".join(questions)}}
 </details>
